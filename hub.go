@@ -17,7 +17,7 @@ type hub struct {
 func newHub() *hub {
 	return &hub{
 		sessions:   make(map[*Session]bool),
-		broadcast:  make(chan *envelope),
+		broadcast:  make(chan *envelope, 1024),
 		register:   make(chan *Session),
 		unregister: make(chan *Session),
 		exit:       make(chan *envelope),
