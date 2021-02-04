@@ -13,7 +13,7 @@ import (
 // Session wrapper around websocket connections.
 type Session struct {
 	Request *http.Request
-	Keys    map[string]interface{}
+	keys    map[string]interface{}
 	conn    *websocket.Conn
 	output  chan *envelope
 	melody  *Melody
@@ -186,16 +186,15 @@ func (s *Session) CloseWithMsg(msg []byte) error {
 }
 
 // Set is used to store a new key/value pair exclusivelly for this session.
-// It also lazy initializes s.Keys if it was not used previously.
+// It also lazy initializes s.keys if it was not used previously.
 func (s *Session) Set(key string, value interface{}) {
 	s.rwmutex.Lock()
 	defer s.rwmutex.Unlock()
-
-	if s.Keys == nil {
-		s.Keys = make(map[string]interface{})
+	if s.keys == nil {
+		s.keys = make(map[string]interface{})
 	}
 
-	s.Keys[key] = value
+	s.keys[key] = value
 }
 
 // Get returns the value for the given key, ie: (value, true).
@@ -204,8 +203,8 @@ func (s *Session) Get(key string) (value interface{}, exists bool) {
 	s.rwmutex.RLock()
 	defer s.rwmutex.RUnlock()
 
-	if s.Keys != nil {
-		value, exists = s.Keys[key]
+	if s.keys != nil {
+		value, exists = s.keys[key]
 	}
 
 	return
@@ -221,6 +220,54 @@ func (s *Session) MustGet(key string) interface{} {
 	}
 
 	panic("Key \"" + key + "\" does not exist")
+}
+
+// GetInt returns the value for the given key, ie: (value, true).
+// If the value does not exist (or if the vaule is not an int) it returns (0, false)
+func (s *Session) GetInt(key string) (int, bool) {
+	vv, ok := s.Get(key)
+	if !ok {
+		return 0, false
+	}
+	v, ok := vv.(int)
+	return v, ok
+}
+
+// GetString returns the value for the given key, ie: (value, true).
+// If the value does not exist (or if the vaule is not a string) it returns ("", false)
+func (s *Session) GetString(key string) (string, bool) {
+	vv, ok := s.Get(key)
+	if !ok {
+		return "", false
+	}
+	v, ok := vv.(string)
+	return v, ok
+}
+
+// GetBool returns the value for the given key, ie: (value, true).
+// If the value does not exist (or if the vaule is not a boolean) it returns (false, false)
+func (s *Session) GetBool(key string) (bool, bool) {
+	vv, ok := s.Get(key)
+	if !ok {
+		return false, false
+	}
+	v, ok := vv.(bool)
+	return v, ok
+}
+
+// Keys retrieves a COPY of all keys
+func (s *Session) Keys() map[string]interface{} {
+	s.rwmutex.RLock()
+	defer s.rwmutex.RUnlock()
+	//
+	if s.keys == nil {
+		return map[string]interface{}{}
+	}
+	clone := make(map[string]interface{})
+	for k, v := range s.keys {
+		clone[k] = v
+	}
+	return clone
 }
 
 // IsClosed returns the status of the connection.

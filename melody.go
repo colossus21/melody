@@ -175,7 +175,7 @@ func (m *Melody) HandleRequestWithKeys(w http.ResponseWriter, r *http.Request, k
 
 	session := &Session{
 		Request: r,
-		Keys:    keys,
+		keys:    keys,
 		conn:    conn,
 		output:  make(chan *envelope, m.Config.MessageBufferSize),
 		melody:  m,
@@ -280,6 +280,20 @@ func (m *Melody) Sessions() ([]*Session, error) {
 		return nil, errors.New("melody instance is closed")
 	}
 	return m.hub.all(), nil
+}
+
+// Map executes the function f on all sessions. It stops if f returns an error.
+func (m *Melody) Map(f func(s *Session) error) error {
+	if m.hub.closed() {
+		return errors.New("melody instance is closed")
+	}
+	sessions := m.hub.all()
+	for _, sess := range sessions {
+		if err := f(sess); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Close closes the melody instance and all connected sessions.
