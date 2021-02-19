@@ -19,7 +19,7 @@ your way so you can write real-time apps. Features include:
 ## Install
 
 ```bash
-go get gopkg.in/olahol/melody.v1
+go get github.com/colossus21/melody
 ```
 
 ## [Example: chat](https://github.com/olahol/melody/tree/master/examples/chat)
@@ -32,7 +32,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"gopkg.in/olahol/melody.v1"
+	"github.com/colossus21/melody"
 	"net/http"
 )
 
@@ -64,7 +64,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/standard"
 	"github.com/labstack/echo/middleware"
-	"gopkg.in/olahol/melody.v1"
+	"github.com/colossus21/melody"
 	"net/http"
 )
 
@@ -102,7 +102,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"gopkg.in/olahol/melody.v1"
+	"github.com/colossus21/melody"
 	"net/http"
 	"strconv"
 	"strings"
@@ -164,16 +164,7 @@ func main() {
 
 ### [More examples](https://github.com/olahol/melody/tree/master/examples)
 
-## [Documentation](https://godoc.org/github.com/olahol/melody)
-
-## Contributors
-
-* Ola Holmström (@olahol)
-* Shogo Iwano (@shiwano)
-* Matt Caldwell (@mattcaldwell)
-* Heikki Uljas (@huljas)
-* Robbie Trencheny (@robbiet480)
-* yangjinecho (@yangjinecho)
+## [Documentation](https://godoc.org/github.com/colossus21/melody)
 
 ## FAQ
 
